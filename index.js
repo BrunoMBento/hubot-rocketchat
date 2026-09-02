@@ -126,11 +126,14 @@ class RocketChatBotAdapter extends Adapter {
         attachment.type = 'video'
       }
       this.robot.logger.debug('Message type AttachmentMessage')
-      return this.robot.receive(new AttachmentMessage(user, attachment, message.msg, message._id))
+      const attachmentMessage = new AttachmentMessage(user, attachment, message.msg, message._id)
+      if (message.tmid) attachmentMessage.tmid = message.tmid
+      return this.robot.receive(attachmentMessage)
     }
 
     // Standard text messages, receive as is
     let textMessage = new TextMessage(user, message.msg, message._id)
+    if (message.tmid) textMessage.tmid = message.tmid
     this.robot.logger.debug(`TextMessage: ${textMessage.toString()}`)
     return this.robot.receive(textMessage)
   }
